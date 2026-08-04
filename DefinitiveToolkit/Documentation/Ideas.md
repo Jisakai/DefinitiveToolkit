@@ -2,4 +2,8 @@
 
 # Bugs
 
-# Thing to Fix
+# TO DO
+services
+bootstrap
+scenemanager
+

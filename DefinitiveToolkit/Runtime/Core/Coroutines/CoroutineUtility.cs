@@ -1,12 +1,24 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using DTK.Core.Coroutines;
 
 namespace DTK.Core.Coroutines
 {
     public class CoroutineUtility : MonoBehaviour
     {
+        
+        #region Delay
+        public static CoroutineHandle Start(Action action, MonoBehaviour owner = null)
+        {
+            return CoroutineRunner.StartRoutine(StartRoutineT(action), owner);
+        }
+
+        private static IEnumerator StartRoutineT(Action onComplete)
+        {
+            onComplete?.Invoke();
+            yield break;
+        }
+        #endregion
         
         #region Delay
         public static CoroutineHandle Delay(float seconds, Action onComplete, bool realTime = false,MonoBehaviour owner = null)
@@ -87,7 +99,7 @@ namespace DTK.Core.Coroutines
         #region RepeatFor
         public static CoroutineHandle RepeatFor(float interval, int loopCount, Action onTick, Action onComplete = null, bool tickFromZero = false, bool realTime = false, MonoBehaviour owner = null)
         {
-            return CoroutineRunner.StartRoutine(RepeatForRoutine(interval, loopCount, onTick, onComplete, tickFromZero, realTime, owner));
+            return CoroutineRunner.StartRoutine(RepeatForRoutine(interval, loopCount, onTick, onComplete, tickFromZero, realTime), owner);
         }
 
         private static IEnumerator RepeatForRoutine(float interval, int count, Action onTick, Action onComplete, bool tickFromZero, bool realTime)
