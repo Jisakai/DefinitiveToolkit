@@ -93,7 +93,7 @@ namespace DTK.Core.Coroutines
         }
 
         /// <summary>Stops every coroutine and marks them all cancelled.</summary>
-        public static void StopAllRoutines()
+        public static void StopAllRoutines() 
         {
             Instance._StopAll();
         }
