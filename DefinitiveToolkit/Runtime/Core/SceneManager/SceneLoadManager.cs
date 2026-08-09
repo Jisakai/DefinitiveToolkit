@@ -126,7 +126,11 @@ namespace DTK.Core.SceneManagement
 
             foreach (SceneRef scene in scenes)
             {
-                if (_loadedAdditive.Contains(scene.SceneName)) continue;
+                if (_loadedAdditive.Contains(scene.SceneName))
+                {
+                    Debug.LogWarning($"[SceneLoadManager] '{scene.SceneName}' already loaded, skipping in set.");
+                    continue;
+                }
 
                 AsyncOperation op = SceneManager.LoadSceneAsync(scene.SceneName, LoadSceneMode.Additive);
                 while (!op.isDone)
@@ -144,6 +148,28 @@ namespace DTK.Core.SceneManagement
             OnTransitionCompleted?.Invoke();
             onComplete?.Invoke();
         }
+        
+        public void UnloadSet(IEnumerable<SceneRef> scenes, Action onComplete = null)
+        {
+            CoroutineRunner.StartRoutine(UnloadSetRoutine(scenes, onComplete));
+        }
+
+        private IEnumerator UnloadSetRoutine(IEnumerable<SceneRef> scenes, Action onComplete)
+        {
+            foreach (SceneRef scene in scenes)
+            {
+                if (!_loadedAdditive.Contains(scene.SceneName)) continue;
+
+                AsyncOperation op = SceneManager.UnloadSceneAsync(scene.SceneName);
+                while (!op.isDone)
+                    yield return null;
+
+                _loadedAdditive.Remove(scene.SceneName);
+            }
+
+            onComplete?.Invoke();
+        }
+        
         #endregion
     }
 }

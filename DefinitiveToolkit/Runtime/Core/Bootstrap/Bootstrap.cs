@@ -1,15 +1,19 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using DTK.Core.SceneManagement;
 
 namespace DTK.Core.Services
 {
     public class Bootstrap : MonoBehaviour
     {
         [SerializeField] private List<ServiceInstaller> installers;
+        [SerializeField] private SceneRef uiScene;
 
         private void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+
             foreach (ServiceInstaller installer in installers)
             {
                 if (installer == null)
@@ -21,6 +25,8 @@ namespace DTK.Core.Services
                 IService service = installer.CreateService();
                 RegisterService(installer.ServiceType, service);
             }
+
+            ServiceRegistry.Require<SceneService>().LoadAdditive(uiScene);
         }
 
         private void RegisterService(System.Type serviceType, IService service)
@@ -30,7 +36,6 @@ namespace DTK.Core.Services
                 .MakeGenericMethod(serviceType);
 
             registerMethod.Invoke(null, new object[] { service });
-
             Debug.Log($"[Bootstrap] Wired up service: {serviceType.Name}");
         }
     }

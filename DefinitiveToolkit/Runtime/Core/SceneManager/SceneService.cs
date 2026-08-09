@@ -30,5 +30,8 @@ namespace DTK.Core.SceneManagement
 
         public void LoadSet(IEnumerable<SceneRef> scenes, ISceneTransition transition = null, Action onComplete = null)
             => _manager.LoadSet(scenes, transition, onComplete);
+        
+        public void UnloadSet(IEnumerable<SceneRef> scenes, Action onComplete = null)
+            => _manager.UnloadSet(scenes, onComplete);
     }
 }
